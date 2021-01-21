@@ -14,19 +14,19 @@ const App = () => {
   const [data, setData] = useState([]);
   const [newActivity, setNewActivity] = useState(false);
   const [isDetailsActive, setIsDetailsActive] = useState(false);
-  const [detailsButton, setDetailsButton] = useState('More Details');
 
-  useEffect(() => {
-    fetch(endpoint)
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => console.error(error));
-  }, [newActivity]);
-
-  console.log(data);
-  console.log(isDetailsActive)
+  const fetchData = async () => {
+    try {
+      let response = await fetch(endpoint)
+      let json = await response.json()
+      setData(json);
+    } catch(error) {
+      console.log('error: ', error);
+    }
+  }
 
   const handleActivity = () => {
+    fetchData();
     setNewActivity(data);
   }
 
@@ -38,7 +38,17 @@ const App = () => {
     if (newActivity) return (
       <View style={styles.activityContainer}>
         <Text style={styles.activity}>{data.activity}</Text>
-        <Button title={isDetailsActive ? 'More Details' : 'See Less'} onPress={handleDetails}/>
+        <Button title={!isDetailsActive ? 'More Details' : 'See Less'} onPress={handleDetails}/>
+      </View>
+    )
+  }
+
+  const renderDetails = () => {
+    if (isDetailsActive) return (
+      <View style={styles.details}>
+        <Text style={styles.detailsItem}>Type: {data.type}</Text>
+        <Text style={styles.detailsItem}>Participants: {data.participants}</Text>
+        <Text style={styles.detailsItem}>Price: ${data.price}</Text>
       </View>
     )
   }
@@ -48,10 +58,11 @@ const App = () => {
       <View style={styles.App}>
         <StatusBar barStyle="dark-content" />
           <Text style={styles.title}>Bored?</Text>
-          <TouchableOpacity style={styles.button} >
+          <TouchableOpacity style={styles.activityButton} >
             <Button title='Activity Suggestions' color='white' onPress={handleActivity} />
           </TouchableOpacity>
           {renderActivity()}
+          {renderDetails()}
       </View>
     </>
   );
@@ -66,7 +77,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
   },
-  button: {
+  activityButton: {
     backgroundColor: '#0059b3',
     borderRadius: 8,
     margin: 25,
@@ -78,6 +89,13 @@ const styles = StyleSheet.create({
   activity: {
     fontSize: 24,
     textAlign: 'center',
+  },
+  details: {
+    paddingTop: 10,
+  },
+  detailsItem: {
+    fontSize: 18,
+    margin: 5,
   }
 });
 
