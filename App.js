@@ -10,21 +10,11 @@ import {
 
 const endpoint = 'https://www.boredapi.com/api/activity/'
 
-const getData = () => {
-  return fetch(endpoint)
-    .then((response) => response.json())
-    .then((json) => {
-      console.log('data: ', json);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
-getData();
-
 const App = () => {
   const [data, setData] = useState([]);
   const [newActivity, setNewActivity] = useState(false);
+  const [isDetailsActive, setIsDetailsActive] = useState(false);
+  const [detailsButton, setDetailsButton] = useState('More Details');
 
   useEffect(() => {
     fetch(endpoint)
@@ -33,12 +23,24 @@ const App = () => {
       .catch((error) => console.error(error));
   }, [newActivity]);
 
-  const handleClick = () => {
+  console.log(data);
+  console.log(isDetailsActive)
+
+  const handleActivity = () => {
     setNewActivity(data);
   }
 
+  const handleDetails = () => {
+    setIsDetailsActive(!isDetailsActive);
+  }
+
   const renderActivity = () => {
-    if (newActivity) return <Text style={styles.activity}>{data.activity}</Text>
+    if (newActivity) return (
+      <View style={styles.activityContainer}>
+        <Text style={styles.activity}>{data.activity}</Text>
+        <Button title={isDetailsActive ? 'More Details' : 'See Less'} onPress={handleDetails}/>
+      </View>
+    )
   }
 
   return (
@@ -47,7 +49,7 @@ const App = () => {
         <StatusBar barStyle="dark-content" />
           <Text style={styles.title}>Bored?</Text>
           <TouchableOpacity style={styles.button} >
-            <Button title='Activity Suggestion' color='white' onPress={handleClick} />
+            <Button title='Activity Suggestions' color='white' onPress={handleActivity} />
           </TouchableOpacity>
           {renderActivity()}
       </View>
@@ -70,10 +72,7 @@ const styles = StyleSheet.create({
     margin: 25,
     padding: 10,
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  activityContainer: {
     width: '80%',
   },
   activity: {
