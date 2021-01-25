@@ -91,7 +91,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   details: {
-    paddingTop: 10,
+    position: 'absolute',
+    bottom: 250,
   },
   detailsItem: {
     fontSize: 18,
