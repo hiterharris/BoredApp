@@ -92,6 +92,8 @@ const styles = StyleSheet.create({
   },
   details: {
     paddingTop: 10,
+    position: 'absolute',
+    bottom: 225,
   },
   detailsItem: {
     fontSize: 18,
